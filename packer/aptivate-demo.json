@@ -1,0 +1,13 @@
+{
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "",
+    "secret_key": "",
+    "region": "ap-southeast-1",
+    "source_ami": "ami-0c034f5e",
+    "instance_type": "m1.small",
+    "ssh_username": "ec2-user",
+    "ssh_timeout": "5m",
+    "ami_name": "aptivate-demo {{timestamp}}"
+  }]
+}
