@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=0.0.0
+Encoding=UTF-8
+Name=AptivateDemo
+Comment=Aptivate demo kiosk launcher
+Categaries=Application
+Exec=aptivate-demo-launcher
+Terminal=false
+Type=Application
+GenericName[en_GB]=AptivateDemo
