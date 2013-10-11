@@ -1,0 +1,15 @@
+#!/bin/sh
+
+LAST_RELEASE=https://dl.dropboxusercontent.com/u/122936615/pkg/aptidemo-chromium-kiosk_0.5.0%2Baptivate0_amd64.deb
+
+DOWNLOADS=$(mktemp --tmpdir -d kiosk-install.XXXXXX)
+cleanup() {
+  rm -rf ${DOWNLOADS}
+}
+trap 'cleanup' EXIT INT
+
+wget -q -O ${DOWNLOADS}/chromium-kiosk.deb ${LAST_RELEASE}
+
+sudo aptitude purge -y aptidemo-chromium-kiosk
+sudo aptitude install -y gdebi
+sudo gdebi ${DOWNLOADS}/chromium-kiosk.deb
