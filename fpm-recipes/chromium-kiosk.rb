@@ -21,10 +21,10 @@ class ChromiumKiosk < FPM::Cookery::Recipe
   end
 
   def install
-    (opt/'aptivate-demo/chromium-online').mkdir
-    cp_r Dir[workdir('chromium-online/*')],
-         opt('aptivate-demo/chromium-online').to_s
-    chmod_R "go+rX", opt('aptivate-demo/chromium-online')
+    (opt/'aptivate-demo/chromium-profile').mkdir
+    cp_r Dir[workdir('chromium-profile/*')],
+         opt('aptivate-demo/chromium-profile').to_s
+    chmod_R "go+rX", opt('aptivate-demo/chromium-profile')
 
     bin.install workdir('aptivate-demo-launcher')
     share('applications').install workdir('aptivate-demo-launcher.desktop')

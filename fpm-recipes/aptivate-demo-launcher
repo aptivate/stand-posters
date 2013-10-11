@@ -7,6 +7,6 @@ cleanup() {
   rm -rf ${LAUNCHER_PATH} 
 }
 trap 'cleanup' EXIT INT
-cp -r ${SOURCE_PATH}/chromium-online ${LAUNCHER_PATH}
+cp -r ${SOURCE_PATH}/chromium-profile ${LAUNCHER_PATH}
 
-chromium-browser --user-data-dir=${LAUNCHER_PATH}/chromium-online
+chromium-browser --user-data-dir=${LAUNCHER_PATH}/chromium-profile

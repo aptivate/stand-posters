@@ -1,0 +1,12 @@
+#!/bin/sh
+
+
+SOURCE_PATH=/opt/aptivate-demo
+LAUNCHER_PATH=$(mktemp --tmpdir -d aptivate-demo.XXXXX)
+cleanup() {
+  rm -rf ${LAUNCHER_PATH} 
+}
+trap 'cleanup' EXIT INT
+cp -r ${SOURCE_PATH}/chromium-online ${LAUNCHER_PATH}
+
+chromium-browser --user-data-dir=${LAUNCHER_PATH}/chromium-online

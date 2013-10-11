@@ -1,0 +1,468 @@
+// reducing the number of search facets
+(function($, window){
+
+    $(".facet").each(function() {
+        if ($(this).find('.facet_not_used').length === 0) {
+            $(this).hide();
+        }
+    });
+
+    // Add lessMore plugin
+    $.fn.extend({
+        lessMore: function(options) {
+
+            var defaults = {
+                limit: 5,
+                moreText: "More",
+                lessText: "Less",
+                numbers: true,
+                append: true,
+                moreClass: "more",
+                lessClass: "less"
+            };
+
+            var options = $.extend(defaults, options);
+
+            return this.each(function() {
+
+                var obj = $(this);
+
+                //Create references to the options
+                var moreClass = options.moreClass;
+                var lessClass = options.lessClass;
+                var lessText = options.lessText;
+                var moreText = options.moreText;
+
+                //Calculate number of rows and hide them
+                var rows = obj.children();
+                var quantity = rows.length - options.limit;
+                rows.slice(options.limit).hide();
+
+                //If "numbers" is set to true append with number of items hidden
+                if(options.numbers) {
+                    moreText += ' (' + quantity + ')';
+                }
+
+                //Only add the link if quantity of child elements exceeds the options.limit
+                if(quantity > 0) {
+                    var control = '<span class="'+ moreClass +'">'+ moreText +'<\/span>';
+                }
+
+                //Check if "append" is set to true, otherwise prepend the "control"
+                if(options.append) {
+                    obj.append(control);
+                }
+                else {
+                    obj.prepend(control);
+                }
+
+                //Create a reference to the control
+
+                var itemControl = $('.' + moreClass, obj);
+
+                itemControl.click(function() {
+
+                    var link = $(this);
+                    var linkif = link.hasClass(moreClass);
+
+                    // If rows are hidden, show them, and change our link.
+
+                    if (linkif) {
+                        link.removeClass(moreClass);
+                        link.addClass(lessClass);
+                        link.html(lessText);
+                        rows.slice(options.limit).show();
+                    }
+                    else {
+                        link.removeClass(lessClass);
+                        link.addClass(moreClass);
+                        link.html(moreText);
+                        rows.slice(options.limit).hide();
+                    }
+                });
+            });
+        }
+    });
+
+    function add_youtube_items($list, url) {
+      var result_markup = [];
+      if ($list.length) {
+        $('body').addClass('loading-videos');
+        $.getJSON(url, function(data) {
+
+          jQuery.each(data.feed.entry, function(i, item) {
+
+            if ( item['media$group']['media$player'] ){
+                var url = item['media$group']['media$player'][0]['url'];
+                var thumb = item['media$group']['media$thumbnail'][0]['url'];
+                var term = item['media$group']['media$title'];
+                result_markup[result_markup.length] = '<a href="'+url+'" title="'+term.$t+'"><img src="'+thumb+'" alt="'+term.$t+'" /></a>';
+            }
+          });
+  	      $list.append(result_markup.join(''));
+
+  	      $('body').removeClass('loading-videos');
+  		  });
+      }
+    }
+
+
+    window.CDKN = {
+    	initRecentArticles: function( $ ) {
+            var $this = $(this);
+    		$("#recent_posts-featured .scrollable").scrollable({ vertical: true, keyboard: false });
+        }(jQuery),
+
+    	initYouTube: function() {
+    	  var playlist_url_start = 'http://gdata.youtube.com/feeds/api/playlists/',
+    	  playlist_url_end = '?alt=json-in-script&max-results=12&callback=?',
+    	  // All different playlist items and containers
+    	  home_playlist = {
+  	      selector: $('body#en_GB:not(.themecats, .regioncats), body#en_gb:not(.themecats, .regioncats)').find('#youtube .items'),
+  	      url: 'http://gdata.youtube.com/feeds/users/cdknetwork/uploads?alt=json-in-script&max-results=12&callback=?'
+  	    },
+
+        /* http://gdata.youtube.com/feeds/api/playlists/CD00FCD744C8454D?alt=json-in-script&max-results=12&callback=? */
+    	  youtube_conf = [
+    	    home_playlist,
+    	    {
+              selector: $('body#es_es:not(.themecats) #youtube .items'),
+    	      /*url: playlist_url_start + 'CD00FCD744C8454D' + playlist_url_end */
+              url: playlist_url_start + 'PLCD00FCD744C8454D' + playlist_url_end
+    	    },
+    	    /*Case Climate and development planning*/
+    	    {
+    	      selector: $('.climate-compatible-development-strategies-and-plans #youtube .items'),
+    	      url: playlist_url_start + 'D3394450C6771875' + playlist_url_end
+    	    },
+    	    /*Case Disaster risk reduction*/
+    	    {
+    	      selector: $('.strengthening-resilience-through-climate-related-disaster-risk-management #youtube .items'),
+    	      url: playlist_url_start + '1CA4AC0B34F0DFDD' + playlist_url_end
+    	    },
+    	    /*Case Climate finance*/
+    	    {
+    	      selector: $('.improving-developing-countries-access-to-climate-finance #youtube .items'),
+    	      url: playlist_url_start + '764C2F576B850C81' + playlist_url_end
+    	    },
+    	    /*Case Supporting climate negotiators*/
+    	    {
+    	      selector: $('.supporting-climate-negotiators-from-the-least-developed-countries #youtube .items'),
+    	      url: playlist_url_start + '7854AEC118F5FF96' + playlist_url_end
+    	    },
+    	    /*Region: Africa*/
+    	    {
+    	      selector: $('.africa #youtube .items'),
+    	      url: playlist_url_start + '8474FA6ECEF8F377' + playlist_url_end
+    	    },
+    	    /*Region: Asia*/
+    	    {
+    	      selector: $('.asia #youtube .items'),
+    	      url: playlist_url_start + 'EBA0F68A90599AE3' + playlist_url_end
+    	    },
+    	    /*Region: LAC*/
+    	    {
+    	      selector: $('.lac #youtube .items'),
+    	      url: playlist_url_start + '6AD71549028C8A9E' + playlist_url_end
+    	    }
+    	  ],
+    	  // loop variables
+    	  i = 0,
+    	  max = youtube_conf.length,
+    	  current;
+
+    	  // Add predefined youtube elements by url and selector
+    	  for (; i < max; i++) {
+    	    current = youtube_conf[i];
+    	    add_youtube_items(current.selector, current.url);
+    	  }
+
+    	  // =========
+    	  // Add (or don't add) youtube elements based on the result of the previous statements
+    	  // =========
+
+    	  // If the theme has no playlist, load the homepage playlist instead
+    	  var $themecat_list = $('body.themecats:not(.loading-videos) #youtube .items');
+    	  if (!$themecat_list.find('*').length) {
+    	    add_youtube_items($themecat_list, home_playlist.url);
+    	  }
+
+    	  // If the country page has no playlist, load the homepage playlist instead
+    	  var $countrycat_list = $('body.regioncats:not(.loading-videos) #youtube .items');
+    	  if (!$countrycat_list.find('*').length) {
+    	    add_youtube_items($countrycat_list, home_playlist.url);
+    	  }
+    	},
+    	initYouTubeCarousel: function() {
+    			jQuery("#youtube .scrollable").scrollable();
+    	},
+    	initRegionsNavigation: function() {
+    		if (jQuery('#banner #navigation').length > 0) {
+
+    			jQuery('#banner #navigation ul li.regions').hover(
+    				function() {
+
+    					jQuery(this).addClass('hover');
+    					jQuery(this).find('.sub').show();
+
+    				},
+    				function() {
+    					jQuery(this).removeClass('hover');
+    					jQuery(this).find('.sub').hide();
+    				}
+    			);
+
+    		}
+      },
+    	initExternalLInks: function() {
+    		jQuery("a[rel*=external]").click( function() {
+    		        window.open(this.href);
+    		        return false;
+    		 });
+    	},
+    	initCoutryDropdown: function() {
+        jQuery('ul.country-dropdown li.browse-countries').hover(
+  				function() {
+  					jQuery(this).addClass('hover');
+  					jQuery(this).find('.sub').show();
+  				},
+  				function() {
+  					jQuery(this).removeClass('hover');
+  					jQuery(this).find('.sub').hide();
+  				}
+  			);
+      },
+    	initStylingFunctions: function() {
+    		jQuery("ul.list li:odd").addClass("odd");
+    		jQuery("#intro-header p").last().addClass("last");
+    	},
+    	initSearchFacets: function() {
+    		jQuery('ul.facetitems').lessMore({
+    		      limit: 5
+    		});
+    	},
+    	initPDFTracker: function() {
+    		jQuery('a[href*=.pdf]').click(function () {
+    			var re = /([\w\d_-]*)\.?[^\\\/]*$/i;
+    			customLink = '/pdf/' + jQuery(this).attr('href').match(re)[0];
+    			pageTracker._trackPageview(customLink);
+    		});
+    	},
+    	initFixFlash: function() {
+    		// loop through every embed tag on the site
+    	    var embeds = document.getElementsByTagName('embed');
+    	    for (i = 0; i < embeds.length; i++) {
+    	        embed = embeds[i];
+    	        var new_embed;
+    	        // everything but Firefox & Konqueror
+    	        if (embed.outerHTML) {
+    	            var html = embed.outerHTML;
+    	            // replace an existing wmode parameter
+    	            if (html.match(/wmode\s*=\s*('|")[a-zA-Z]+('|")/i))
+    	                new_embed = html.replace(/wmode\s*=\s*('|")window('|")/i, "wmode='transparent'");
+    	            // add a new wmode parameter
+    	            else
+    	                new_embed = html.replace(/<embed\s/i, "<embed wmode='transparent' ");
+    	            // replace the old embed object with the fixed version
+    	            embed.insertAdjacentHTML('beforeBegin', new_embed);
+    	            embed.parentNode.removeChild(embed);
+    	        } else {
+    	            // cloneNode is buggy in some versions of Safari & Opera, but works fine in FF
+    	            new_embed = embed.cloneNode(true);
+    	            if (!new_embed.getAttribute('wmode') || new_embed.getAttribute('wmode').toLowerCase() == 'window')
+    	                new_embed.setAttribute('wmode', 'transparent');
+    	            embed.parentNode.replaceChild(new_embed, embed);
+    	        }
+    	    }
+    	    // loop through every object tag on the site
+    	    var objects = document.getElementsByTagName('object');
+    	    for (i = 0; i < objects.length; i++) {
+    	        object = objects[i];
+    	        var new_object;
+    	        // object is an IE specific tag so we can use outerHTML here
+    	        if (object.outerHTML) {
+    	            var html = object.outerHTML;
+    	            // replace an existing wmode parameter
+    	            if (html.match(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")[a-zA-Z]+('|")\s*\/?\>/i))
+    	                new_object = html.replace(/<param\s+name\s*=\s*('|")wmode('|")\s+value\s*=\s*('|")window('|")\s*\/?\>/i, "<param name='wmode' value='transparent' />");
+    	            // add a new wmode parameter
+    	            else
+    	                new_object = html.replace(/<\/object\>/i, "<param name='wmode' value='transparent' />\n</object>");
+    	            // loop through each of the param tags
+    	            var children = object.childNodes;
+    	            for (j = 0; j < children.length; j++) {
+    	                try {
+    	                    if (children[j] != null) {
+    	                        var theName = children[j].getAttribute('name');
+    	                        if (theName != null && theName.match(/flashvars/i)) {
+    	                            new_object = new_object.replace(/<param\s+name\s*=\s*('|")flashvars('|")\s+value\s*=\s*('|")[^'"]*('|")\s*\/?\>/i, "<param name='flashvars' value='" + children[j].getAttribute('value') + "' />");
+    	                        }
+    	                    }
+    	                }
+    	                catch (err) {
+    	                }
+    	            }
+    	            // replace the old embed object with the fixed versiony
+    	            object.insertAdjacentHTML('beforeBegin', new_object);
+    	            object.parentNode.removeChild(object);
+    	        }
+    	    }
+    	},
+    	initRegionsMap: function() {
+    		// Check if map exists
+    			if(jQuery('#map_box')) {
+    				// Loop through each AREA in the imagemap
+    				jQuery('#map_box area').each(function() {
+
+    					// Assigning an action to the mouseover event
+    					jQuery(this).mouseover(function(e) {
+    						var region_id = jQuery(this).attr('id').replace('area_', '');
+    						jQuery('#'+region_id).show();
+    					});
+
+    					// Assigning an action to the mouseout event
+    					jQuery(this).mouseout(function(e) {
+    						var region_id = jQuery(this).attr('id').replace('area_', '');
+    						jQuery('#'+region_id).hide();
+    					});
+
+
+    				});
+    			}
+    	},
+    	initReegleSearchForm: {
+			  reegleSearchOption: function($searchForm) {
+  			  // When the recommended sites radio is checked
+  			  // switch out the class to indicate that Reegle search is enabled
+
+  			  // Cache the searchform, search input and the radio buttons
+  			  var $searchInput = jQuery('#s', $searchForm),
+  				    $radio = jQuery('ul.search-radios', $searchForm).find('li input'),
+  				    current_local_action = $searchForm.attr('action');
+					var replacement_values = [
+	  				$searchForm.find('.reegle_placeholder').text(),
+	  		    $searchForm.find('.search_placeholder').text()
+	  			];
+
+  				// Add referrer as part of the hidden inputs
+  				$searchForm.append('<input type="hidden" value="CDKN" name="referrer" />');
+
+  				$radio.change(function() {
+  					$searchForm.toggleClass('reegle-search-active');
+  					var radioChange = $(this).val(),
+  					    placeholder_class;
+  					switch (radioChange) {
+  					  case 'google':
+  					  case 'reegle':
+                placeholder_class = '.reegle_placeholder';
+                $searchForm.attr('target', '_blank');
+                $searchForm.attr('action', 'http://www.reegle.info/index.php');
+                $searchInput.attr('name', 'searchTerm');
+  					    break;
+  					  default:
+  					    placeholder_class = '.search_placeholder';
+                $searchForm.attr('target', '');
+                $searchForm.attr('action', current_local_action);
+                $searchInput.attr('name', 's');
+  					    break;
+  					}
+            CDKN.initReegleSearchForm.switchSearchFormEndpoint($searchForm, radioChange);
+
+						if(!(replacement_values.indexOf($searchInput.val()) < 0)){
+  						$searchInput.val($searchForm.find(placeholder_class).text());
+  					}
+  				});
+
+					//onfocus="if (this.value !== '') {this.value = '';}" onblur="if (this.value == '') {CDKN.initReegleSearchForm.reegleSearchValue();}"
+  				// Empty the search input field if it contains
+  				//
+
+  				$searchInput.focus(function(){
+						if (replacement_values.indexOf($searchInput.val()) >= 0) {
+              $searchInput.val('');
+            }
+					});
+
+					$searchInput.blur(function(){
+						if (!this.value) {
+							CDKN.initReegleSearchForm.reegleSearchValue($searchForm);
+						}
+					});
+
+  				if ($('#search-results').length) {
+    				$searchInput.focus(function(){
+              if (replacement_values.indexOf($searchInput.val()) >= 0) {
+                $searchInput.val('');
+              }
+    				}).focusout(function(){
+    				  if (!$searchInput.val().length) {
+    				    $radio.change();
+    				  }
+    				});
+  				}
+  			},
+			  reegleSearchValue: function($searchForm) {
+  			  // TODO: a function that replaces the value of the searchform
+  			  // onblur depending on which radio button is selected
+
+  			  // Cache the same variables as above - way around? :(
+  			  var $searchInput = jQuery('#s'),
+  				    $radio = jQuery('ul.search-radios',$searchForm).find('li input'),
+  				    $reegleSwitch = $radio.filter(':checked'),
+  				    placeholder_class;
+
+  				switch ($reegleSwitch.val()) {
+  				  case 'google':
+  				  case 'reegle':
+              placeholder_class = '.reegle_placeholder';
+  				    break;
+  				  default:
+  				    placeholder_class = '.search_placeholder';
+  				    break;
+  				}
+
+  				return $searchInput.val($searchForm.find(placeholder_class).text());
+  			},
+        switchSearchFormEndpoint: function($form, new_value) {
+          // Gets called when a form switches between endpoints Reegle (or google) and CDKN
+
+          // For the searchbox of Solr, we need to alter the name of the search input box
+          if ($form.attr('id') === 'searchbox') {
+
+            switch (new_value) {
+              case 'google':
+              case 'reegle':
+                // Reegle uses 'searchTerm' rather than s
+                $form.find('input[name="s"]').attr('name', 'searchTerm');
+                break;
+
+              default:
+                // CDKN uses 's' rather than searchTerm
+                $form.find('input[name="searchTerm"]').attr('name', 's');
+                break;
+            }
+
+          }
+        }
+		  }
+    };
+
+})(jQuery, window);
+
+
+jQuery(document).ready(function() {
+	/* CDKN.initRecentArticles(); */
+	/* CDKN.initYouTube();*/
+	/* CDKN.initYouTubeCarousel();*/
+	CDKN.initRegionsNavigation();
+	CDKN.initExternalLInks();
+	CDKN.initCoutryDropdown();
+	CDKN.initStylingFunctions();
+	CDKN.initSearchFacets();
+	CDKN.initPDFTracker();
+	CDKN.initFixFlash();
+	CDKN.initRegionsMap();
+
+	CDKN.initReegleSearchForm.reegleSearchOption( $('#searchform') );
+    CDKN.initReegleSearchForm.reegleSearchOption( $('#searchbox') );
+});
