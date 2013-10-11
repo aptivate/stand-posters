@@ -12,4 +12,4 @@ wget -q -O ${DOWNLOADS}/chromium-kiosk.deb ${LAST_RELEASE}
 
 sudo aptitude purge -y aptidemo-chromium-kiosk
 sudo aptitude install -y gdebi
-sudo gdebi ${DOWNLOADS}/chromium-kiosk.deb
+sudo gdebi -n ${DOWNLOADS}/chromium-kiosk.deb
