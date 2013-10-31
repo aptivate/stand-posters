@@ -1,0 +1,21 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "dummyec2"
+
+  config.vm.provider :aws do |aws, override|
+    aws.ami = "ami-3c034f6e"
+    aws.instance_type = "m1.medium"
+    aws.region = "ap-southeast-1"
+    aws.keypair_name = "key name"
+
+    aws.user_data = "#!/bin/bash\necho 'Defaults:ec2-user !requiretty' > /etc/sudoers.d/999-vagrant-cloud-init-requiretty && chmod 440 /etc/sudoers.d/999-vagrant-cloud-init-requiretty\nwget -O /etc/yum.repos.d/aptivate.repo http://lin-repo.aptivate.org/yum/centos/6/aptivate.repo\nyum makecache -y\n yum install -y puppet"
+
+    override.ssh.username = "ec2-user"
+    override.ssh.private_key_path = "/home/path/to/key"
+  end
+
+  config.vm.provision "puppet" do |puppet|
+    puppet.module_path = "puppet/modules"
+    puppet.manifests_path = "puppet/manifests"
+    puppet.manifest_file = "vagrant.pp"
+  end
+end

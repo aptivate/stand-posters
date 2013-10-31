@@ -1,0 +1,3 @@
+[submodule "packer/puppet"]
+	path = packer/puppet
+	url = fen-vz-puppet2.fen:/srv/puppet
