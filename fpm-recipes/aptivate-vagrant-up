@@ -1,0 +1,29 @@
+#!/bin/sh
+
+VAGRANT_HOME=/opt/aptivate-demo/vagrant
+LOCAL_NAMES="econsensus.local alfie.local"
+add_local_names() {
+  echo "127.0.0.1 $LOCAL_NAMES" | sudo tee -a /etc/hosts 
+}
+
+remove_local_names() {
+  sudo sed -i "/${LOCAL_NAMES}/d" /etc/hosts
+}
+
+cleanup() {
+  cd ${VAGRANT_HOME}/demo
+  export HOME=${VAGRANT_HOME}
+  vagrant destroy
+  remove_local_names
+}
+trap 'cleanup' EXIT INT
+
+set -e
+
+export HOME=${VAGRANT_HOME}
+sudo chown -R $USER ${VAGRANT_HOME}/
+cd ${VAGRANT_HOME}/demo
+vagrant up
+vagrant ssh-config > ssh_config
+add_local_names
+ssh -N -F ${VAGRANT_HOME}/demo/ssh_config -L 2224:localhost:80 default

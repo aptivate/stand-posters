@@ -1,0 +1,20 @@
+#!/bin/sh
+
+VAGRANT_HOME=/opt/aptivate-demo/vagrant
+cleanup() {
+  true
+}
+trap 'cleanup' EXIT INT
+
+if [ $# -ne 1 ] ; then
+	echo "Usage: $0 path_to_demo_box"
+	exit 1
+fi
+
+DEMO_BOX=$1
+set -e
+mkdir -p ${VAGRANT_HOME}/demo
+
+export HOME=${VAGRANT_HOME}
+vagrant box add demo_box $DEMO_BOX
+cd ${VAGRANT_HOME}/demo && vagrant init demo_box

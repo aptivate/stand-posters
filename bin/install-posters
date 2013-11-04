@@ -1,6 +1,6 @@
 #!/bin/sh
 
-LAST_RELEASE=https://dl.dropboxusercontent.com/u/122936615/pkg/aptidemo-chromium-kiosk_0.5.0%2Baptivate0_amd64.deb
+LAST_RELEASE=https://dl.dropboxusercontent.com/u/122936615/pkg/aptidemo-chromium-kiosk_1.0.0%2Baptivate3_all.deb
 
 DOWNLOADS=$(mktemp --tmpdir -d kiosk-install.XXXXXX)
 cleanup() {

@@ -1,5 +1,7 @@
 Vagrant.configure("2") do |config|
-  config.vm.box = "dummyec2"
+  config.vm.box = "CentOS-64-Minimal"
+
+  config.vm.provider :virtualbox
 
   config.vm.provider :aws do |aws, override|
     aws.ami = "ami-3c034f6e"
