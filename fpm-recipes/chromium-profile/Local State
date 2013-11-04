@@ -6,13 +6,13 @@
    "gl_vendor_string": "Intel Open Source Technology Center",
    "gl_version_string": "2.1 Mesa 9.1.4",
    "hardware_acceleration_mode_previous": true,
-   "http_original_content_length": "11321568",
-   "http_received_content_length": "11321568",
+   "http_original_content_length": "16839170",
+   "http_received_content_length": "16839170",
    "local_state": {
       "multiple_profile_prefs_version": 7
    },
    "ntp": {
-      "promo_resource_cache_update": "1381490627.538029"
+      "promo_resource_cache_update": "1383602972.694116"
    },
    "plugins": {
       "metadata": {
@@ -82,10 +82,10 @@
             } ]
          }
       },
-      "resource_cache_update": "1381490682.537449"
+      "resource_cache_update": "1383580622.382257"
    },
    "policy": {
-      "last_statistics_update": "13025964222536630"
+      "last_statistics_update": "13028054162344509"
    },
    "profile": {
       "info_cache": {
@@ -97,6 +97,7 @@
             "user_name": ""
          }
       },
+      "last_active_profiles": [ "Default" ],
       "last_used": "Default"
    },
    "promo": {
@@ -117,28 +118,28 @@
    },
    "show-first-run-bubble-option": 0,
    "shutdown": {
-      "num_processes": 10,
-      "num_processes_slow": 1,
-      "type": 1
+      "num_processes": 0,
+      "num_processes_slow": 0,
+      "type": 0
    },
    "uninstall_metrics": {
       "installation_date2": "1381490622",
-      "launch_count": "1"
+      "launch_count": "7"
    },
    "user_experience_metrics": {
       "low_entropy_source": 6416,
-      "session_id": 0,
+      "session_id": 6,
       "stability": {
-         "breakpad_registration_fail": 1,
+         "breakpad_registration_fail": 7,
          "breakpad_registration_ok": 0,
          "crash_count": 0,
-         "debugger_not_present": 1,
+         "debugger_not_present": 7,
          "debugger_present": 0,
-         "exited_cleanly": true,
+         "exited_cleanly": false,
          "incomplete_session_end_count": 0,
-         "last_timestamp_sec": "1381491192",
-         "launch_count": 1,
-         "launch_time_sec": "1381490622",
+         "last_timestamp_sec": "1383586184",
+         "launch_count": 7,
+         "launch_time_sec": "1383602967",
          "page_load_count": 0,
          "plugin_stats2": [ {
             "crashes": 0,
